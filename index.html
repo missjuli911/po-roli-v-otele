@@ -1,27 +1,22 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; connect-src 'none'; img-src data: blob:; media-src data: blob:; font-src data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; form-action 'none'">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TL: Ключ — Возможности для отеля</title>
+  <title>TL: Ключ</title>
   <style>
     :root {
       --primary: #3564EB;
       --primary-light: #eef3fd;
-      --primary-hover: #2952c4;
-      --bg: #f4f6fa;
+      --bg: #ffffff;
       --card-bg: #ffffff;
       --border: #e2e8f0;
-      --border-hover: #bfdbfe;
+      --border-hover: #93c5fd;
       --text-main: #0f172a;
       --text-body: #334155;
       --pill-bg: #edf3fd;
       --pill-text: #1d3fb3;
-      --radius: 20px;
-      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --radius: 18px;
     }
 
     * {
@@ -51,7 +46,6 @@
     .top-bar {
       display: flex;
       justify-content: flex-end;
-      padding: 0 4px;
     }
 
     .toggle-all-btn {
@@ -63,7 +57,7 @@
       padding: 6px 14px;
       border-radius: 20px;
       cursor: pointer;
-      transition: var(--transition);
+      transition: all 0.2s ease;
     }
 
     .toggle-all-btn:hover {
@@ -84,60 +78,48 @@
       }
     }
 
-    /* Карточка */
     .card {
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 22px 24px;
+      padding: 20px 22px;
       cursor: pointer;
       user-select: none;
-      transition: var(--transition);
+      transition: all 0.2s ease;
       box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
       display: flex;
       flex-direction: column;
-      height: 100%;
     }
 
     .card:hover {
       border-color: var(--border-hover);
-      box-shadow: 0 8px 24px rgba(53, 100, 235, 0.08);
-      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(53, 100, 235, 0.08);
     }
 
     .card.open {
-      border-color: #93c5fd;
-      box-shadow: 0 8px 24px rgba(53, 100, 235, 0.1);
+      border-color: var(--primary);
+      box-shadow: 0 8px 24px rgba(53, 100, 235, 0.12);
     }
 
-    /* Заголовок с иконкой */
     .card-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      min-height: 80px;
     }
 
     .header-left {
       display: flex;
       align-items: center;
-      gap: 18px;
+      gap: 16px;
     }
 
-    .icon-box {
-      width: 72px;
-      height: 72px;
+    .icon-img {
+      width: 70px;
+      height: 70px;
+      object-fit: contain;
       flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .icon-box svg {
-      width: 100%;
-      height: 100%;
-      filter: drop-shadow(0 4px 10px rgba(53, 100, 235, 0.12));
+      display: block;
     }
 
     .card-title {
@@ -145,7 +127,6 @@
       font-weight: 700;
       color: var(--text-main);
       line-height: 1.3;
-      letter-spacing: -0.01em;
     }
 
     .chevron {
@@ -159,7 +140,7 @@
       justify-content: center;
       flex-shrink: 0;
       color: var(--primary);
-      transition: var(--transition);
+      transition: all 0.25s ease;
     }
 
     .card:hover .chevron {
@@ -174,32 +155,18 @@
       border-color: var(--primary);
     }
 
-    /* Раскрывающийся блок одинакового размера */
-    .expandable-body {
-      display: grid;
-      grid-template-rows: 0fr;
-      transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      flex: 1;
-    }
-
-    .card.open .expandable-body {
-      grid-template-rows: 1fr;
-    }
-
-    .expandable-inner {
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-
-    .body-content {
+    /* Раскрывающийся контент */
+    .card-body {
+      display: none;
       padding-top: 18px;
-      display: flex;
       flex-direction: column;
       justify-content: space-between;
-      height: 100%;
-      min-height: 185px;
+      flex: 1;
+      min-height: 190px;
+    }
+
+    .card.open .card-body {
+      display: flex;
     }
 
     .card-desc {
@@ -208,7 +175,6 @@
       line-height: 1.55;
     }
 
-    /* Нижняя плашка */
     .pill-btn {
       margin-top: 16px;
       background: var(--pill-bg);
@@ -255,101 +221,59 @@
 
     <!-- Верхний ряд -->
     <div class="grid-2col">
-      <!-- 1. Владельцу и управляющему -->
+      <!-- 1 -->
       <div class="card" onclick="toggleCard(this)">
         <div class="card-header">
           <div class="header-left">
-            <div class="icon-box">
-              <!-- 3D Столбчатый график с оранжевой стрелкой вверх -->
-              <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <linearGradient id="gBar1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#b9d7fd"/><stop offset="100%" stop-color="#3564EB"/></linearGradient>
-                  <linearGradient id="gBar2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8bb9fa"/><stop offset="100%" stop-color="#2554d6"/></linearGradient>
-                  <linearGradient id="gBar3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5a98f5"/><stop offset="100%" stop-color="#1d45bd"/></linearGradient>
-                  <linearGradient id="gBar4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#7baef7"/><stop offset="100%" stop-color="#2451d1"/></linearGradient>
-                  <linearGradient id="gArr" x1="0" y1="1" x2="1" y2="0"><stop offset="0%" stop-color="#ff993a"/><stop offset="100%" stop-color="#ea580c"/></linearGradient>
-                </defs>
-                <rect x="18" y="66" width="13" height="22" rx="4" fill="url(#gBar1)"/>
-                <rect x="36" y="52" width="13" height="36" rx="4" fill="url(#gBar2)"/>
-                <rect x="54" y="38" width="13" height="50" rx="4" fill="url(#gBar3)"/>
-                <rect x="72" y="44" width="13" height="44" rx="4" fill="url(#gBar4)"/>
-                <path d="M14 62 C34 46, 54 32, 82 20" stroke="url(#gArr)" stroke-width="7" stroke-linecap="round"/>
-                <polygon points="86,14 88,28 75,22" fill="#ea580c"/>
-              </svg>
-            </div>
+            <img class="icon-img" src="icon1.png" alt="Владельцу и управляющему">
             <h2 class="card-title">Владельцу и управляющему</h2>
           </div>
           <div class="chevron">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </div>
         </div>
-
-        <div class="expandable-body">
-          <div class="expandable-inner">
-            <div class="body-content">
-              <p class="card-desc">
-                Владельцу и управляющему важны экономика и контроль. Они принимают решение о подключении инструмента и оценивают его влияние на бизнес: снижение стоимости привлечения гостей, рост среднего чека и доходности отеля.
-              </p>
-              <div class="pill-btn">
-                <div class="pill-left">
-                  <div class="pill-icon">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M4 19h4v-7H4v7zm6 0h4v-12h-4v12zm6 0h4v-16h-4v16z"/></svg>
-                  </div>
-                  <span>Снижение стоимости привлечения и рост дохода</span>
-                </div>
-                <div class="pill-arrow">
-                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                </div>
+        <div class="card-body">
+          <p class="card-desc">
+            Владельцу и управляющему важны экономика и контроль. Они принимают решение о подключении инструмента и оценивают его влияние на бизнес: снижение стоимости привлечения гостей, рост среднего чека и доходности отеля.
+          </p>
+          <div class="pill-btn">
+            <div class="pill-left">
+              <div class="pill-icon">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M4 19h4v-7H4v7zm6 0h4v-12h-4v12zm6 0h4v-16h-4v16z"/></svg>
               </div>
+              <span>Снижение стоимости привлечения и рост дохода</span>
+            </div>
+            <div class="pill-arrow">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 2. Директору по продажам -->
+      <!-- 2 -->
       <div class="card" onclick="toggleCard(this)">
         <div class="card-header">
           <div class="header-left">
-            <div class="icon-box">
-              <!-- 3D Мишень с дротиком -->
-              <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <linearGradient id="gTgtOut" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#bdd7fd"/><stop offset="100%" stop-color="#3564EB"/></linearGradient>
-                  <linearGradient id="gTgtIn" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#e2edfd"/></linearGradient>
-                  <linearGradient id="gTgtBull" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#5584fa"/><stop offset="100%" stop-color="#1f4bd6"/></linearGradient>
-                </defs>
-                <circle cx="48" cy="52" r="37" fill="url(#gTgtOut)"/>
-                <circle cx="48" cy="52" r="25" fill="url(#gTgtIn)"/>
-                <circle cx="48" cy="52" r="13" fill="url(#gTgtBull)"/>
-                <path d="M78 20 L52 48" stroke="#ea580c" stroke-width="5" stroke-linecap="round"/>
-                <polygon points="76,14 86,24 82,16" fill="#f97316"/>
-                <polygon points="51,46 56,43 47,52 48,47" fill="#ea580c"/>
-              </svg>
-            </div>
+            <img class="icon-img" src="icon2.png" alt="Директору по продажам">
             <h2 class="card-title">Директору по продажам</h2>
           </div>
           <div class="chevron">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </div>
         </div>
-
-        <div class="expandable-body">
-          <div class="expandable-inner">
-            <div class="body-content">
-              <p class="card-desc">
-                Директору по продажам важно повышать эффективность прямых продаж. TL: Ключ помогает управлять представлением отеля на площадке, работать с контентом и повышать конверсию в бронирование.
-              </p>
-              <div class="pill-btn">
-                <div class="pill-left">
-                  <div class="pill-icon">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
-                  </div>
-                  <span>Эффективность прямых продаж и конверсия</span>
-                </div>
-                <div class="pill-arrow">
-                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                </div>
+        <div class="card-body">
+          <p class="card-desc">
+            Директору по продажам важно повышать эффективность прямых продаж. TL: Ключ помогает управлять представлением отеля на площадке, работать с контентом и повышать конверсию в бронирование.
+          </p>
+          <div class="pill-btn">
+            <div class="pill-left">
+              <div class="pill-icon">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
               </div>
+              <span>Эффективность прямых продаж и конверсия</span>
+            </div>
+            <div class="pill-arrow">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
             </div>
           </div>
         </div>
@@ -358,148 +282,89 @@
 
     <!-- Средний ряд -->
     <div class="grid-2col">
-      <!-- 3. Маркетологу -->
+      <!-- 3 -->
       <div class="card" onclick="toggleCard(this)">
         <div class="card-header">
           <div class="header-left">
-            <div class="icon-box">
-              <!-- 3D Мегафон -->
-              <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <linearGradient id="gMegaB" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8cbafc"/><stop offset="100%" stop-color="#3564EB"/></linearGradient>
-                  <linearGradient id="gMegaR" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c5ddfd"/><stop offset="100%" stop-color="#699df8"/></linearGradient>
-                </defs>
-                <ellipse cx="28" cy="46" rx="9" ry="19" fill="url(#gMegaR)"/>
-                <path d="M28 27 L68 40 L68 56 L28 65 Z" fill="url(#gMegaB)"/>
-                <ellipse cx="68" cy="48" rx="5" ry="9" fill="#1d45bd"/>
-                <path d="M42 58 L46 76 A4 4 0 0 0 54 74 L50 56 Z" fill="#6ba0f8"/>
-                <path d="M16 34 C12 40, 12 52, 16 58" stroke="#f97316" stroke-width="4" stroke-linecap="round"/>
-                <path d="M9 26 C2 38, 2 54, 9 66" stroke="#ea580c" stroke-width="4" stroke-linecap="round"/>
-              </svg>
-            </div>
+            <img class="icon-img" src="icon3.png" alt="Маркетологу">
             <h2 class="card-title">Маркетологу</h2>
           </div>
           <div class="chevron">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </div>
         </div>
-
-        <div class="expandable-body">
-          <div class="expandable-inner">
-            <div class="body-content">
-              <p class="card-desc">
-                Маркетологу важно возвращать гостей и стимулировать повторные бронирования. Для этого он может использовать push-уведомления и специальные предложения.
-              </p>
-              <div class="pill-btn">
-                <div class="pill-left">
-                  <div class="pill-icon">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M18 11v-1l-9-5v14l9-5v-1l4 2V9l-4 2zm-11 5H4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h3v6z"/></svg>
-                  </div>
-                  <span>Возврат гостей и повторные бронирования</span>
-                </div>
-                <div class="pill-arrow">
-                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                </div>
+        <div class="card-body">
+          <p class="card-desc">
+            Маркетологу важно возвращать гостей и стимулировать повторные бронирования. Для этого он может использовать push-уведомления и специальные предложения.
+          </p>
+          <div class="pill-btn">
+            <div class="pill-left">
+              <div class="pill-icon">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M18 11v-1l-9-5v14l9-5v-1l4 2V9l-4 2zm-11 5H4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h3v6z"/></svg>
               </div>
+              <span>Возврат гостей и повторные бронирования</span>
+            </div>
+            <div class="pill-arrow">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 4. Администраторам ресепшн -->
+      <!-- 4 -->
       <div class="card" onclick="toggleCard(this)">
         <div class="card-header">
           <div class="header-left">
-            <div class="icon-box">
-              <!-- 3D Шестерёнка и облачко чата -->
-              <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <linearGradient id="gGear" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8dbcfd"/><stop offset="100%" stop-color="#3564EB"/></linearGradient>
-                </defs>
-                <circle cx="45" cy="45" r="28" fill="url(#gGear)"/>
-                <circle cx="45" cy="45" r="14" fill="#ffffff"/>
-                <rect x="40" y="10" width="10" height="12" rx="3" fill="#6ea3f8"/>
-                <rect x="40" y="68" width="10" height="12" rx="3" fill="#3564EB"/>
-                <rect x="10" y="40" width="12" height="10" rx="3" fill="#6ea3f8"/>
-                <rect x="68" y="40" width="12" height="10" rx="3" fill="#3564EB"/>
-                <!-- Облачко -->
-                <rect x="44" y="44" width="44" height="30" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
-                <circle cx="56" cy="59" r="3" fill="#3564EB"/>
-                <circle cx="66" cy="59" r="3" fill="#3564EB"/>
-                <circle cx="76" cy="59" r="3" fill="#3564EB"/>
-              </svg>
-            </div>
+            <img class="icon-img" src="icon4.png" alt="Администраторам ресепшн">
             <h2 class="card-title">Администраторам ресепшн</h2>
           </div>
           <div class="chevron">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </div>
         </div>
-
-        <div class="expandable-body">
-          <div class="expandable-inner">
-            <div class="body-content">
-              <p class="card-desc">
-                Администраторам ресепшн важно обслуживать гостей быстрее и с меньшими трудозатратами. Гости могут самостоятельно открывать номер с помощью цифрового ключа, заказывать дополнительные услуги и сообщать о проблемах через чат.
-              </p>
-              <div class="pill-btn">
-                <div class="pill-left">
-                  <div class="pill-icon">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="17" cy="12" r="1.5" fill="currentColor"/><rect x="2" y="4" width="20" height="16" rx="4"/></svg>
-                  </div>
-                  <span>Быстрое обслуживание и цифровой ключ</span>
-                </div>
-                <div class="pill-arrow">
-                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                </div>
+        <div class="card-body">
+          <p class="card-desc">
+            Администраторам ресепшн важно обслуживать гостей быстрее и с меньшими трудозатратами. Гости могут самостоятельно открывать номер с помощью цифрового ключа, заказывать дополнительные услуги и сообщать о проблемах через чат.
+          </p>
+          <div class="pill-btn">
+            <div class="pill-left">
+              <div class="pill-icon">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="17" cy="12" r="1.5" fill="currentColor"/><rect x="2" y="4" width="20" height="16" rx="4"/></svg>
               </div>
+              <span>Быстрое обслуживание и цифровой ключ</span>
+            </div>
+            <div class="pill-arrow">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Нижняя карточка: Revenue-менеджеру -->
+    <!-- 5 -->
     <div class="card" onclick="toggleCard(this)">
       <div class="card-header">
         <div class="header-left">
-          <div class="icon-box">
-            <!-- 3D Стопка монет с оранжевым знаком % -->
-            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="44" cy="74" rx="26" ry="11" fill="#1e43b8"/>
-              <ellipse cx="44" cy="70" rx="26" ry="11" fill="#3564EB"/>
-              <ellipse cx="44" cy="58" rx="26" ry="11" fill="#1e43b8"/>
-              <ellipse cx="44" cy="54" rx="26" ry="11" fill="#588af7"/>
-              <ellipse cx="44" cy="42" rx="26" ry="11" fill="#1e43b8"/>
-              <ellipse cx="44" cy="38" rx="26" ry="11" fill="#93bcfd"/>
-              <rect x="52" y="44" width="36" height="34" rx="10" fill="#f97316"/>
-              <text x="70" y="68" font-size="22" font-weight="900" fill="#ffffff" text-anchor="middle" font-family="-apple-system, sans-serif">%</text>
-            </svg>
-          </div>
+          <img class="icon-img" src="icon5.png" alt="Revenue-менеджеру">
           <h2 class="card-title">Revenue-менеджеру</h2>
         </div>
         <div class="chevron">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </div>
       </div>
-
-      <div class="expandable-body">
-        <div class="expandable-inner">
-          <div class="body-content">
-            <p class="card-desc">
-              Revenue-менеджеру важно управлять доходностью и стимулировать спрос. TL: Ключ открывает дополнительные возможности для работы с программой лояльности, скидками и баллами, которые помогают мотивировать гостей к бронированию.
-            </p>
-            <div class="pill-btn">
-              <div class="pill-left">
-                <div class="pill-icon">
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2C6.48 2 2 4.02 2 6.5s4.48 4.5 10 4.5 10-2.02 10-4.5S17.52 2 12 2zm0 8c-5.52 0-10-2.02-10-4.5V10c0 2.48 4.48 4.5 10 4.5s10-2.02 10-4.5V5.5c0 2.48-4.48 4.5-10 4.5zm0 6.5c-5.52 0-10-2.02-10-4.5V16c0 2.48 4.48 4.5 10 4.5s10-2.02 10-4.5v-2c0 2.48-4.48 4.5-10 4.5z"/></svg>
-                </div>
-                <span>Управление доходностью и спросом</span>
-              </div>
-              <div class="pill-arrow">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-              </div>
+      <div class="card-body">
+        <p class="card-desc">
+          Revenue-менеджеру важно управлять доходностью и стимулировать спрос. TL: Ключ открывает дополнительные возможности для работы с программой лояльности, скидками и баллами, которые помогают мотивировать гостей к бронированию.
+        </p>
+        <div class="pill-btn">
+          <div class="pill-left">
+            <div class="pill-icon">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2C6.48 2 2 4.02 2 6.5s4.48 4.5 10 4.5 10-2.02 10-4.5S17.52 2 12 2zm0 8c-5.52 0-10-2.02-10-4.5V10c0 2.48 4.48 4.5 10 4.5s10-2.02 10-4.5V5.5c0 2.48-4.48 4.5-10 4.5zm0 6.5c-5.52 0-10-2.02-10-4.5V16c0 2.48 4.48 4.5 10 4.5s10-2.02 10-4.5v-2c0 2.48-4.48 4.5-10 4.5z"/></svg>
             </div>
+            <span>Управление доходностью и спросом</span>
+          </div>
+          <div class="pill-arrow">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
           </div>
         </div>
       </div>
